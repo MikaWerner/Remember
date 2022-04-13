@@ -8,9 +8,10 @@ public class SwitchScene : MonoBehaviour
     //show image
     //light
 
-    private void Update()
+    //camera collides with triggerzone
+    void OnTriggerEnter(Collision coll)
     {
-        if(Input.GetKeyDown(KeyCode.E))
+        if (coll.collider.tag == "MainCamera")
         {
             LoadScene();
         }

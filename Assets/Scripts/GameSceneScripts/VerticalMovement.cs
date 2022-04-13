@@ -23,10 +23,10 @@ public class VerticalMovement : MonoBehaviour
         //Up/Down Movement
         if (IsActive)
         {
-            if (Input.GetKeyDown(KeyCode.P))
+            /*if (Input.GetKeyDown(KeyCode.P)) //TEST
             {
                 sound.PlayNoteB(0);
-            }
+            }*/
 
             if (Input.GetKeyDown(KeyCode.S))
             {
@@ -53,7 +53,7 @@ public class VerticalMovement : MonoBehaviour
             VerticalSteps++;
             transform.position += new Vector3(0, 0, 0.5f);
         }
-        //use function PlayNote from NoteSound and connect it to VerticalSteps
+    //VerticalSteps influences index numbers of list SoundEffectButtons
         sound.PlayNoteB(VerticalSteps);
     }
 

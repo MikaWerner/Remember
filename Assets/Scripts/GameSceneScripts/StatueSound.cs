@@ -4,19 +4,21 @@ using UnityEngine;
 
 public class StatueSound : MonoBehaviour
 {
-    //play sounds after answer is correct
-
 
     //create List of AudioClips for Statue
     public List<AudioClip> SoundEffectsStatue = new List<AudioClip>();
 
     public AudioSource audioSource;
 
-    //Play selected AudioClip from list
-    public void PlayNoteS(int noteIndex)
+    //play selected audioclip from list
+    public void PlayNote(int noteindex)
     {
-        audioSource.PlayOneShot(SoundEffectsStatue[noteIndex]);
+        audioSource.PlayOneShot(SoundEffectsStatue[noteindex]);
     }
 
-    //Statue_Answers.bool = true;
+
+
+
+
+
 }

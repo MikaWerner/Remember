@@ -9,4 +9,7 @@ public class CameraMovement : MonoBehaviour
 
     //if all levels completed, then start walking into cave (Animation)
     //play animation WalkingIntoCave
+
+    //camera movement
+
 }

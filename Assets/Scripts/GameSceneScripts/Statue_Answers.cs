@@ -1,121 +1,232 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Statue_Answers : MonoBehaviour
 {
-    //Answer Correct
-    //Answer Wrong
-
+    //changing Buttons_Script
     public SwitchButtons switchButtons;
-    public bool answerCorrect;
 
+    //Wrong/ Correct Light_Script
     public Lights lights;
 
-    //Array
-    /*public int[] Level = new int[14];
+    //BridgeMovement_Script
+    public Bridge_Movement bridge;
 
-    //check if current level is completed
-    void LevelComplete(int n)
+    //StatueSound_Script
+    public StatueSound sound;
+
+    //Current Level display (UI)
+    public static int LevelStage = 1;
+    public Text level_text;
+
+    //"hinterlistig" list made of LevelDating class because of the ints list
+    public List<LevelDating> ChonkerList = new List<LevelDating>();
+    public int LevelIndex = 0;
+
+    //Camera movement
+    private Animator anim;
+
+
+    //states of the level
+    public enum LevelState
     {
-        Level[n] = 1;
+    PLAYING_MELODY, // melody is playing + animation
+    PLAYER_INPUT, // player is inputting notes
+    CHECK_ANSWER, // check answer + right/ wrong light
+    RICK_UNLEASHED, // enter his dungeon
+    };
+
+    //setting it as PLAYING_MELODY to start with
+    public LevelState state = LevelState.PLAYING_MELODY;
+    public Camera MAINCAMERA;
+
+    //timing
+    public float stateLifetime = 0.0f;
+    public float melody_timeUntilNote = 0.0f;
+    public float melody_index = 0.0f;   
+
+    public float delayBetweenNotes = 1.5f; // Control delay between notes
+
+
+    private void Awake()
+    {
+        anim = MAINCAMERA.GetComponent<Animator>();
+        anim.SetBool("ISDONE?", false);
     }
 
-    public bool CheckLevelComplete(int n)
+    void Update()
     {
-        return Level[n] == 1;
+        level_text.text = "Level:" + LevelStage;
+
+        stateLifetime += Time.deltaTime; //Time.delta: time between each update function call (seconds)
+
+        switch (state)
+        {
+            //play melody to be repeated by player
+            case LevelState.PLAYING_MELODY:                     //Step1
+                 melody_timeUntilNote -= Time.deltaTime;
+
+                if (melody_timeUntilNote <= 0.0f)
+                {
+                    if (melody_index > 3)   
+                    {
+                        // Finished playing melody.
+                        SetState(LevelState.PLAYER_INPUT);
+                    }
+                    else
+                    {
+                        // Play melody
+                        switch (melody_index)
+                        {
+                            case 0:
+                                sound.PlayNote(ChonkerList[LevelIndex].a);
+
+                                break;
+
+                            case 1:
+                                sound.PlayNote(ChonkerList[LevelIndex].b);
+
+                                break;
+
+                            case 2:
+                                sound.PlayNote(ChonkerList[LevelIndex].c);
+
+                                break;
+
+                            case 3:
+                                sound.PlayNote(ChonkerList[LevelIndex].d);
+
+                                break;
+                        }
+                        melody_timeUntilNote = delayBetweenNotes;
+                        melody_index++;
+                    }
+                }
+
+                break;
+
+            //press enter
+            case LevelState.PLAYER_INPUT:       //Step2
+
+                if (Input.GetKeyDown(KeyCode.Return))
+                {
+                    Debug.Log("You may enter");
+                    SetState(LevelState.CHECK_ANSWER);
+                }
+
+                break;
+
+            //call function CheckAnswer
+            case LevelState.CHECK_ANSWER:       //Step3
+
+                if (stateLifetime < 3.0f)
+                { // After 3 seconds, check the answer.
+                    TestAnswer();
+                    SetState(LevelState.PLAYING_MELODY);
+                }
+
+
+                break;
+
+            //finished all levels
+            case LevelState.RICK_UNLEASHED:     //Step4
+                
+                break;
+
+        }
     }
-    */
 
-    //Level number in array
-
-
-
-    //list of levels
-    void LevelSequence()
+    //SetState into another switch case state
+    void SetState(LevelState newState)  
     {
-         ButtonsSequence(3, 5, 6, 1); // Level 1
+        state = newState;
+        stateLifetime = 0.0f;
+        melody_index = 0;
+        melody_timeUntilNote = delayBetweenNotes;
+    
+
+        //Switch for camera movements + turning on/ off lights
+        switch(state)
+        {
+            case LevelState.PLAYING_MELODY:
+            Debug.Log("State: Play melody");
+                // Code for starting the camera animation to move up to the gate.
+                //anim.Play("LookUpCamera");
+
+            break;
+            
+            case LevelState.PLAYER_INPUT:
+            Debug.Log("State: Player input");
+                // Code to start playing animation to move camera down to the board.
+                //anim.Play("LookDownCamera");
+
+                break;
+
+            case LevelState.CHECK_ANSWER:
+            Debug.Log("State: Check answers");
+                // Code for starting the camera animation to move up to the gate.
+                
+            
+            break;
+
+            case LevelState.RICK_UNLEASHED:
+            Debug.Log("State: incomprehensible");
+                // Code for starting rick animation
+                
+                if(state == LevelState.RICK_UNLEASHED)
+                {
+                    anim.SetBool("ISDONE?", true);
+                }
+                
+
+            break;
+        }
     }
-
-
-    //enum plus list for each level
-    //function to input index number (position) of each button
-    void ButtonsSequence(int a, int b, int c, int d)
-    {
-        switchButtons.buttons[0].VerticalSteps = a;
-        switchButtons.buttons[1].VerticalSteps = b;
-        switchButtons.buttons[2].VerticalSteps = c;
-        switchButtons.buttons[3].VerticalSteps = d;
-    }
-
-
-    //test if button sequence is correct
-    //bool proof if level is completed (if lvl3 should be started it will be checked if lvl2 is complete)
-    void CheckAnswer()
-    {
-        //if (PlayerInput == ButtonSequence)
-        bool answerCorrect = true;
-        //CorrectAnswer();
-
-        //else
-        //WrongAnswer();
-    }
-
-    //Compare index numbers for each items out of both lists and compare
-
 
     //CorrectAnswer
     void CorrectAnswer()
     {
-        //next level
-        //Green eyes
-        lights.CorrectEyes();
-        //bridge move
-        //if (lvl 14) then play animation
+       lights.CorrectEyes();
+       bridge.MoveBridge();
+       LevelStage++;
+       LevelIndex++;
+
+       if (LevelIndex < ChonkerList.Count)
+       {
+            SetState(LevelState.PLAYING_MELODY);
+       }
+       else
+       {
+            SetState(LevelState.RICK_UNLEASHED);
+       }
     }
 
     //WrongAnswer
     void WrongAnswer()
     {
-        //repeat level
-        //red eyes
-        lights.WrongEyes();
+        lights.WrongEyes(); //turn it off again
+        Debug.Log("Loser");
+        SetState(LevelState.PLAYER_INPUT);
     }
 
-
-
+    //list of levels + button sequence
+    //function to input index number (position) of each button (which note must be played)
+    bool CompareWithButtons(int a, int b, int c, int d)
+    {
+        return switchButtons.buttons[0].VerticalSteps == a
+            && switchButtons.buttons[1].VerticalSteps == b
+            && switchButtons.buttons[2].VerticalSteps == c
+            && switchButtons.buttons[3].VerticalSteps == d;
+    }
 
 
     void TestAnswer()
-    { //Levels
+    { 
+        LevelDating currentLevel = ChonkerList[LevelIndex];
 
-        
-
-
-
-
-
-
-        //hard gecoded
-        //Level1
-        if(switchButtons.buttons[0].VerticalSteps == 1 
-            && switchButtons.buttons[1].VerticalSteps == 2 
-            && switchButtons.buttons[2].VerticalSteps == 4
-            && switchButtons.buttons[3].VerticalSteps == 2)
-        {
-            CorrectAnswer();
-            answerCorrect = true;
-        }
-        else
-        {
-            //DIE (I guess)
-            WrongAnswer();
-        }
-
-        //Level2
-        if (switchButtons.buttons[0].VerticalSteps == 6
-            && switchButtons.buttons[0].VerticalSteps == 6
-            && switchButtons.buttons[0].VerticalSteps == 5)
+        /*if(CompareWithButtons(currentLevel.a,currentLevel.b,currentLevel.c,currentLevel.d))   //template
         {
             CorrectAnswer();
         }
@@ -123,190 +234,168 @@ public class Statue_Answers : MonoBehaviour
         {
             //DIE (I guess)
             WrongAnswer();
-        }
+        }*/
 
-        //Level3
-        if (switchButtons.buttons[0].VerticalSteps == 1
-            && switchButtons.buttons[0].VerticalSteps == 2
-            && switchButtons.buttons[0].VerticalSteps == 4
-            && switchButtons.buttons[0].VerticalSteps == 2)
+
+        //All Level melodies
+        //did not implement a function that switches between three and four button answers so i will leave the last button the same not as in the melody before
+        //manually typing it in the object...aaaaaaaaah
+
+        //Lvl 1
+        if (CompareWithButtons(1, 2, 4, 2))
         {
             CorrectAnswer();
         }
         else
         {
-            //DIE (I guess)
             WrongAnswer();
         }
 
-        //Level4
-        if (switchButtons.buttons[0].VerticalSteps == 5
-            && switchButtons.buttons[0].VerticalSteps == 5
-            && switchButtons.buttons[0].VerticalSteps == 4
-            && switchButtons.buttons[0].VerticalSteps == 3)
+        //Lvl 2
+        if (CompareWithButtons(6, 6, 5, 2))   
         {
             CorrectAnswer();
         }
         else
         {
-            //DIE (I guess)
             WrongAnswer();
         }
 
-        //Level5
-        if (switchButtons.buttons[0].VerticalSteps == 1
-            && switchButtons.buttons[0].VerticalSteps == 2
-            && switchButtons.buttons[0].VerticalSteps == 4
-            && switchButtons.buttons[0].VerticalSteps == 2)
+        //lvl 3
+        if (CompareWithButtons(1, 2, 4, 2))
         {
             CorrectAnswer();
         }
         else
         {
-            //DIE (I guess)
             WrongAnswer();
         }
 
-        //Level6
-        if (switchButtons.buttons[0].VerticalSteps == 4
-            && switchButtons.buttons[0].VerticalSteps == 5
-            && switchButtons.buttons[0].VerticalSteps == 3
-            && switchButtons.buttons[0].VerticalSteps == 2)
+        //lvl 4
+        if (CompareWithButtons(5, 5, 4, 3))
         {
             CorrectAnswer();
         }
         else
         {
-            //DIE (I guess)
             WrongAnswer();
         }
 
-        //Level7
-        if (switchButtons.buttons[0].VerticalSteps == 1
-            && switchButtons.buttons[0].VerticalSteps == 2
-            && switchButtons.buttons[0].VerticalSteps == 5
-            && switchButtons.buttons[0].VerticalSteps == 4)
+        //lvl 5 
+        if (CompareWithButtons(1, 2, 4, 2))
         {
             CorrectAnswer();
         }
         else
         {
-            //DIE (I guess)
             WrongAnswer();
         }
 
-        //Level8
-        if (switchButtons.buttons[0].VerticalSteps == 1
-            && switchButtons.buttons[0].VerticalSteps == 2
-            && switchButtons.buttons[0].VerticalSteps == 4
-            && switchButtons.buttons[0].VerticalSteps == 1)
+        //lvl 6
+        if (CompareWithButtons(4, 5, 3, 2))
         {
             CorrectAnswer();
         }
         else
         {
-            //DIE (I guess)
             WrongAnswer();
         }
 
-        //Level9
-        if (switchButtons.buttons[0].VerticalSteps == 6
-            && switchButtons.buttons[0].VerticalSteps == 6
-            && switchButtons.buttons[0].VerticalSteps == 5)
+        //lvl 7
+        if (CompareWithButtons(1, 2, 5, 4))
         {
             CorrectAnswer();
         }
         else
         {
-            //DIE (I guess)
             WrongAnswer();
         }
 
-        //Level10
-        if (switchButtons.buttons[0].VerticalSteps == 1
-            && switchButtons.buttons[0].VerticalSteps == 2
-            && switchButtons.buttons[0].VerticalSteps == 4
-            && switchButtons.buttons[0].VerticalSteps == 2)
+        //lvl 8
+        if (CompareWithButtons(1, 2, 4, 1))
         {
             CorrectAnswer();
         }
         else
         {
-            //DIE (I guess)
             WrongAnswer();
         }
 
-        //Level11
-        if (switchButtons.buttons[0].VerticalSteps == 8
-            && switchButtons.buttons[0].VerticalSteps == 3
-            && switchButtons.buttons[0].VerticalSteps == 4
-            && switchButtons.buttons[0].VerticalSteps == 3)
+        //lvl 9
+        if (CompareWithButtons(6, 6, 5, 1))
         {
             CorrectAnswer();
         }
         else
         {
-            //DIE (I guess)
             WrongAnswer();
         }
 
-        //Level12
-        if (switchButtons.buttons[0].VerticalSteps == 1
-            && switchButtons.buttons[0].VerticalSteps == 2
-            && switchButtons.buttons[0].VerticalSteps == 4
-            && switchButtons.buttons[0].VerticalSteps == 2)
+        //lvl 10
+        if (CompareWithButtons(1, 2, 4, 2))
         {
             CorrectAnswer();
         }
         else
         {
-            //DIE (I guess)
             WrongAnswer();
         }
 
-        //Level13
-        if (switchButtons.buttons[0].VerticalSteps == 4
-            && switchButtons.buttons[0].VerticalSteps == 5
-            && switchButtons.buttons[0].VerticalSteps == 3
-            && switchButtons.buttons[0].VerticalSteps == 2)
+        //lvl 11
+        if (CompareWithButtons(8, 3, 4, 3))
         {
             CorrectAnswer();
         }
         else
         {
-            //DIE (I guess)
             WrongAnswer();
         }
 
-        //Level14
-        if (switchButtons.buttons[0].VerticalSteps == 1
-            && switchButtons.buttons[0].VerticalSteps == 5
-            && switchButtons.buttons[0].VerticalSteps == 4
-            && switchButtons.buttons[0].VerticalSteps == 4)
+        //lvl 12
+        if (CompareWithButtons(1, 2, 4, 2))
         {
             CorrectAnswer();
         }
         else
         {
-            //DIE (I guess)
             WrongAnswer();
         }
+
+        //play 13
+        if (CompareWithButtons(4, 5, 3, 2))
+        {
+            CorrectAnswer();
+        }
+        else
+        {
+            WrongAnswer();
+        }
+
+        //lvl 14
+        if (CompareWithButtons(1, 5, 4, 4))
+        {
+            CorrectAnswer();
+        }
+        else
+        {
+            WrongAnswer();
+        }
+
+
+        //old level design over and over again... now i am using a function instead of setting up 4 conditions
+
+        ////level14
+        //if (switchbuttons.buttons[0].verticalsteps == 1
+        //    && switchbuttons.buttons[0].verticalsteps == 5
+        //    && switchbuttons.buttons[0].verticalsteps == 4
+        //    && switchbuttons.buttons[0].verticalsteps == 4)
+        //{
+        //    correctanswer();
+        //}
+        //else
+        //{
+        //    //die (i guess)
+        //    wronganswer();
+        //}
     }
-
-    //play melody
-
-    void CorrectAnswer()
-    {
-        //next level
-        //Eyes lighten
-        //connect with glowing eyes
-    }
-
-    void WrongAnswer()
-    {
-        //repeat
-        //red eyes
-
-    }
-    
 }

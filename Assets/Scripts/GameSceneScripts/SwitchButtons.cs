@@ -6,9 +6,9 @@ using UnityEngine;
 public class SwitchButtons : MonoBehaviour
 {
     //references
-    public List<MusicScale> buttons = new List<MusicScale>();
+    public List<VerticalMovement> buttons = new List<VerticalMovement>();
     public int activeButtonIndex = 0;
-    public MusicScale activeButton;
+    public VerticalMovement activeButton;
 
     //functions
 

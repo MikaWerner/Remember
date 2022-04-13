@@ -4,56 +4,39 @@ using UnityEngine;
 
 public class Lights : MonoBehaviour
 {
-    //Answer
-    //bool correctAnswer = false;
-    //bool wrongAnswer = false;
-
     public GameObject GreenLight;
     public GameObject RedLight;
 
     private bool lightStatus = false;
 
-    void Update()
+
+    //correctAnswer
+    public void CorrectEyes()
     {
-        
-        if (Input.GetKeyDown(KeyCode.Y))
+        if (lightStatus == true)
         {
-        CorrectEyes();
+            GreenLight.SetActive(false);
+            lightStatus = false;
         }
-
-        if (Input.GetKeyDown(KeyCode.X))
+        else if (lightStatus == false)
         {
-            WrongEyes(); 
+            GreenLight.SetActive(true);
+            lightStatus = true;
         }
+    }
 
-        //correctAnswer
-        void CorrectEyes()
+    //wrongAnswer
+    public void WrongEyes()
+    {
+        if (lightStatus == true)
         {
-            if (lightStatus == true)
-            {
-                GreenLight.SetActive(false);
-                lightStatus = false;
-            }
-            else if (lightStatus == false)
-            {
-                GreenLight.SetActive(true);
-                lightStatus = true;
-            }
+            RedLight.SetActive(false);
+            lightStatus = false;
         }
-
-        //wrongAnswer
-        void WrongEyes()
+        else if (lightStatus == false)
         {
-            if (lightStatus == true)
-            {
-                RedLight.SetActive(false);
-                lightStatus = false;
-            }
-            else if (lightStatus == false)
-            {
-                RedLight.SetActive(true);
-                lightStatus = true;
-            }
+            RedLight.SetActive(true);
+            lightStatus = true;
         }
     }
 
