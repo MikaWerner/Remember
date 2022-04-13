@@ -10,7 +10,7 @@ Finally, after overcoming the gruesome exploration of an abandoned cave once rul
 
 Gameplay:
 
-Repeat the deep ethirial sounds on the small button control panel. Slide vertically to get different notes.
+Repeat the deep ethirial sounds on the small button control panel. Slide the buttons vertically to get the right notes in order to make the bridge get closer.
 
 
 
@@ -18,4 +18,4 @@ Controls:
 
 WASD movement of buttons,
 WS vertical movement,
-AD horizontal movment
+AD switching between buttons
