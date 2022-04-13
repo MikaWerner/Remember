@@ -15,10 +15,4 @@ public class StatueSound : MonoBehaviour
     {
         audioSource.PlayOneShot(SoundEffectsStatue[noteindex]);
     }
-
-
-
-
-
-
 }

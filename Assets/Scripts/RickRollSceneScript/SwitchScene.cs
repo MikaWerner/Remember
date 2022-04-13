@@ -9,12 +9,9 @@ public class SwitchScene : MonoBehaviour
     //light
 
     //camera collides with triggerzone
-    void OnTriggerEnter(Collision coll)
+    void OnTriggerEnter(Collider coll)
     {
-        if (coll.collider.tag == "MainCamera")
-        {
             LoadScene();
-        }
     }
 
     void LoadScene()

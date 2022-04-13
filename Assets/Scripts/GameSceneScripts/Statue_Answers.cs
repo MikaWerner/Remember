@@ -18,7 +18,6 @@ public class Statue_Answers : MonoBehaviour
     public StatueSound sound;
 
     //Current Level display (UI)
-    public static int LevelStage = 1;
     public Text level_text;
 
     //"hinterlistig" list made of LevelDating class because of the ints list
@@ -56,9 +55,13 @@ public class Statue_Answers : MonoBehaviour
         anim.SetBool("ISDONE?", false);
     }
 
+
+    //in this level code i had my friend help and explain to me how to code the sequence of actions of the game
+    //my problem where i got stuck was how to incorporate the statue playing the melody that needs to be repeated
+    //therefor the game is divided into 4 parts: statue playing the melody, player input, check answer, and final part
     void Update()
     {
-        level_text.text = "Level:" + LevelStage;
+        level_text.text = "Level:" + (LevelIndex + 1);
 
         stateLifetime += Time.deltaTime; //Time.delta: time between each update function call (seconds)
 
@@ -121,10 +124,9 @@ public class Statue_Answers : MonoBehaviour
             //call function CheckAnswer
             case LevelState.CHECK_ANSWER:       //Step3
 
-                if (stateLifetime < 3.0f)
-                { // After 3 seconds, check the answer.
+                if (stateLifetime > 2.0f)   //how long a state is 
+                { // After 2 seconds, check the answer.
                     TestAnswer();
-                    SetState(LevelState.PLAYING_MELODY);
                 }
 
 
@@ -145,7 +147,8 @@ public class Statue_Answers : MonoBehaviour
         stateLifetime = 0.0f;
         melody_index = 0;
         melody_timeUntilNote = delayBetweenNotes;
-    
+        
+        lights.ResetLights();
 
         //Switch for camera movements + turning on/ off lights
         switch(state)
@@ -166,21 +169,23 @@ public class Statue_Answers : MonoBehaviour
 
             case LevelState.CHECK_ANSWER:
             Debug.Log("State: Check answers");
+                if(IsAnswerCorrect())
+                {
+                    lights.CorrectEyes();
+                }
                 // Code for starting the camera animation to move up to the gate.
-                
+                else
+                {
+                    lights.WrongEyes();
+                }
             
             break;
 
             case LevelState.RICK_UNLEASHED:
             Debug.Log("State: incomprehensible");
                 // Code for starting rick animation
-                
-                if(state == LevelState.RICK_UNLEASHED)
-                {
                     anim.SetBool("ISDONE?", true);
-                }
-                
-
+     
             break;
         }
     }
@@ -188,9 +193,8 @@ public class Statue_Answers : MonoBehaviour
     //CorrectAnswer
     void CorrectAnswer()
     {
-       lights.CorrectEyes();
+       
        bridge.MoveBridge();
-       LevelStage++;
        LevelIndex++;
 
        if (LevelIndex < ChonkerList.Count)
@@ -206,9 +210,9 @@ public class Statue_Answers : MonoBehaviour
     //WrongAnswer
     void WrongAnswer()
     {
-        lights.WrongEyes(); //turn it off again
+        
         Debug.Log("Loser");
-        SetState(LevelState.PLAYER_INPUT);
+        SetState(LevelState.PLAYING_MELODY);
     }
 
     //list of levels + button sequence
@@ -221,12 +225,30 @@ public class Statue_Answers : MonoBehaviour
             && switchButtons.buttons[3].VerticalSteps == d;
     }
 
+    //check answer giving answers to bool made for lights system turning them on/ off
+    bool IsAnswerCorrect()
+    {
+        LevelDating currentLevel = ChonkerList[LevelIndex];
 
+        if (CompareWithButtons(currentLevel.a, currentLevel.b, currentLevel.c, currentLevel.d))   //template
+        {
+            return true;
+        }
+        else
+        {
+            //DIE (I guess)
+            return false;
+        }
+    }
+
+
+
+    //check answers and use functions
     void TestAnswer()
     { 
         LevelDating currentLevel = ChonkerList[LevelIndex];
 
-        /*if(CompareWithButtons(currentLevel.a,currentLevel.b,currentLevel.c,currentLevel.d))   //template
+        if(CompareWithButtons(currentLevel.a,currentLevel.b,currentLevel.c,currentLevel.d))   //template
         {
             CorrectAnswer();
         }
@@ -234,7 +256,7 @@ public class Statue_Answers : MonoBehaviour
         {
             //DIE (I guess)
             WrongAnswer();
-        }*/
+        }
 
 
         //All Level melodies
@@ -242,144 +264,144 @@ public class Statue_Answers : MonoBehaviour
         //manually typing it in the object...aaaaaaaaah
 
         //Lvl 1
-        if (CompareWithButtons(1, 2, 4, 2))
-        {
-            CorrectAnswer();
-        }
-        else
-        {
-            WrongAnswer();
-        }
+        //if (CompareWithButtons(1, 2, 4, 2))
+        //{
+        //    CorrectAnswer();
+        //}
+        //else
+        //{
+        //    WrongAnswer();
+        //}
 
-        //Lvl 2
-        if (CompareWithButtons(6, 6, 5, 2))   
-        {
-            CorrectAnswer();
-        }
-        else
-        {
-            WrongAnswer();
-        }
+        ////Lvl 2
+        //if (CompareWithButtons(6, 6, 5, 2))   
+        //{
+        //    CorrectAnswer();
+        //}
+        //else
+        //{
+        //    WrongAnswer();
+        //}
 
-        //lvl 3
-        if (CompareWithButtons(1, 2, 4, 2))
-        {
-            CorrectAnswer();
-        }
-        else
-        {
-            WrongAnswer();
-        }
+        ////lvl 3
+        //if (CompareWithButtons(1, 2, 4, 2))
+        //{
+        //    CorrectAnswer();
+        //}
+        //else
+        //{
+        //    WrongAnswer();
+        //}
 
-        //lvl 4
-        if (CompareWithButtons(5, 5, 4, 3))
-        {
-            CorrectAnswer();
-        }
-        else
-        {
-            WrongAnswer();
-        }
+        ////lvl 4
+        //if (CompareWithButtons(5, 5, 4, 3))
+        //{
+        //    CorrectAnswer();
+        //}
+        //else
+        //{
+        //    WrongAnswer();
+        //}
 
-        //lvl 5 
-        if (CompareWithButtons(1, 2, 4, 2))
-        {
-            CorrectAnswer();
-        }
-        else
-        {
-            WrongAnswer();
-        }
+        ////lvl 5 
+        //if (CompareWithButtons(1, 2, 4, 2))
+        //{
+        //    CorrectAnswer();
+        //}
+        //else
+        //{
+        //    WrongAnswer();
+        //}
 
-        //lvl 6
-        if (CompareWithButtons(4, 5, 3, 2))
-        {
-            CorrectAnswer();
-        }
-        else
-        {
-            WrongAnswer();
-        }
+        ////lvl 6
+        //if (CompareWithButtons(4, 5, 3, 2))
+        //{
+        //    CorrectAnswer();
+        //}
+        //else
+        //{
+        //    WrongAnswer();
+        //}
 
-        //lvl 7
-        if (CompareWithButtons(1, 2, 5, 4))
-        {
-            CorrectAnswer();
-        }
-        else
-        {
-            WrongAnswer();
-        }
+        ////lvl 7
+        //if (CompareWithButtons(1, 2, 5, 4))
+        //{
+        //    CorrectAnswer();
+        //}
+        //else
+        //{
+        //    WrongAnswer();
+        //}
 
-        //lvl 8
-        if (CompareWithButtons(1, 2, 4, 1))
-        {
-            CorrectAnswer();
-        }
-        else
-        {
-            WrongAnswer();
-        }
+        ////lvl 8
+        //if (CompareWithButtons(1, 2, 4, 1))
+        //{
+        //    CorrectAnswer();
+        //}
+        //else
+        //{
+        //    WrongAnswer();
+        //}
 
-        //lvl 9
-        if (CompareWithButtons(6, 6, 5, 1))
-        {
-            CorrectAnswer();
-        }
-        else
-        {
-            WrongAnswer();
-        }
+        ////lvl 9
+        //if (CompareWithButtons(6, 6, 5, 1))
+        //{
+        //    CorrectAnswer();
+        //}
+        //else
+        //{
+        //    WrongAnswer();
+        //}
 
-        //lvl 10
-        if (CompareWithButtons(1, 2, 4, 2))
-        {
-            CorrectAnswer();
-        }
-        else
-        {
-            WrongAnswer();
-        }
+        ////lvl 10
+        //if (CompareWithButtons(1, 2, 4, 2))
+        //{
+        //    CorrectAnswer();
+        //}
+        //else
+        //{
+        //    WrongAnswer();
+        //}
 
-        //lvl 11
-        if (CompareWithButtons(8, 3, 4, 3))
-        {
-            CorrectAnswer();
-        }
-        else
-        {
-            WrongAnswer();
-        }
+        ////lvl 11
+        //if (CompareWithButtons(8, 3, 4, 3))
+        //{
+        //    CorrectAnswer();
+        //}
+        //else
+        //{
+        //    WrongAnswer();
+        //}
 
-        //lvl 12
-        if (CompareWithButtons(1, 2, 4, 2))
-        {
-            CorrectAnswer();
-        }
-        else
-        {
-            WrongAnswer();
-        }
+        ////lvl 12
+        //if (CompareWithButtons(1, 2, 4, 2))
+        //{
+        //    CorrectAnswer();
+        //}
+        //else
+        //{
+        //    WrongAnswer();
+        //}
 
-        //play 13
-        if (CompareWithButtons(4, 5, 3, 2))
-        {
-            CorrectAnswer();
-        }
-        else
-        {
-            WrongAnswer();
-        }
+        ////play 13
+        //if (CompareWithButtons(4, 5, 3, 2))
+        //{
+        //    CorrectAnswer();
+        //}
+        //else
+        //{
+        //    WrongAnswer();
+        //}
 
-        //lvl 14
-        if (CompareWithButtons(1, 5, 4, 4))
-        {
-            CorrectAnswer();
-        }
-        else
-        {
-            WrongAnswer();
-        }
+        ////lvl 14
+        //if (CompareWithButtons(1, 5, 4, 4))
+        //{
+        //    CorrectAnswer();
+        //}
+        //else
+        //{
+        //    WrongAnswer();
+        //}
 
 
         //old level design over and over again... now i am using a function instead of setting up 4 conditions

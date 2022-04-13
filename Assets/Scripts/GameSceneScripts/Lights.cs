@@ -13,31 +13,18 @@ public class Lights : MonoBehaviour
     //correctAnswer
     public void CorrectEyes()
     {
-        if (lightStatus == true)
-        {
-            GreenLight.SetActive(false);
-            lightStatus = false;
-        }
-        else if (lightStatus == false)
-        {
-            GreenLight.SetActive(true);
-            lightStatus = true;
-        }
+        GreenLight.SetActive(true);
     }
 
     //wrongAnswer
     public void WrongEyes()
     {
-        if (lightStatus == true)
-        {
-            RedLight.SetActive(false);
-            lightStatus = false;
-        }
-        else if (lightStatus == false)
-        {
-            RedLight.SetActive(true);
-            lightStatus = true;
-        }
+        RedLight.SetActive(true);
     }
 
+    public void ResetLights()
+    {
+        GreenLight.SetActive(false);
+        RedLight.SetActive(false);
+    }
 }

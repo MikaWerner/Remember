@@ -10,8 +10,8 @@ public class SwitchButtons : MonoBehaviour
     public int activeButtonIndex = 0;
     public VerticalMovement activeButton;
 
-    //functions
 
+    //functions
     private void Start()
     {
         ActiveButton();
