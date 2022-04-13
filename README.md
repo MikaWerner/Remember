@@ -19,3 +19,5 @@ Controls:
 WASD movement of buttons,
 WS vertical movement,
 AD switching between buttons
+
+Enter key to confirm selection
